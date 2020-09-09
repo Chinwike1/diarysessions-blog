@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import firebase from 'firebase/app';
+import db, { auth } from '../../firebase';
 
 const Signup = () => {
   const [details, setDetails] = useState({
@@ -20,7 +22,15 @@ const Signup = () => {
     if (password !== confirmPassword) {
       alert('Password mismatch');
     } else {
-      console.log(details);
+      auth.createUserWithEmailAndPassword(email, password).then((cred) => {
+        db.collection('users').doc(cred.user.uid).set({
+          displayName,
+          email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        return cred.user.updateProfile({ displayName });
+      });
+
       setDetails({
         displayName: '',
         email: '',

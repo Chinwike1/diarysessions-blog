@@ -10,9 +10,9 @@ const Navbar = () => {
         <div className='line'></div>
       </button>
       <nav className='navigation navigation-black'>
-        <a href='#!' className='brand-name left'>
+        <Link to='/' className='brand-name left'>
           Diary Sessions
-        </a>
+        </Link>
         <ul>
           <li className='nav-links'>
             <Link to='/login'>Login</Link>
