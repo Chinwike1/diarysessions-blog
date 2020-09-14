@@ -13,6 +13,14 @@
   color: #2392e2;
 }
 
+.primary-color {
+  color: #fe8725;
+}
+
+.secondary-color {
+  color: #2392e2;
+}
+
 /* Post Styling */
 .post {
   padding: 1.6em;
@@ -66,6 +74,7 @@
   font-size: 0.9em;
 }
 
+
 /* Login/Signup Form  */
 .button {
   margin-top: 1.2em;
@@ -73,6 +82,10 @@
   font-size: 0.8rem;
   letter-spacing: 0.5;
   padding: 1em 2em;
+}
+
+.button i {
+  font-size: 1.3em;
 }
 
 .form-wrapper {
@@ -97,6 +110,11 @@
   margin-bottom: 1.5em;
 }
 
+.login-form .form-field,
+.signup-form .form-field {
+  padding: 0.8em 3em;
+}
+
 .form-wrap {
   width: 100%;
 }
@@ -111,7 +129,7 @@
 }
 
 .form-field {
-  padding: 0.8em 3em;
+  padding: 0.8em;
   border: 1px solid #b5b8b2;
   border-radius: 5px;
   width: 80%;
@@ -175,7 +193,7 @@
   transform: rotate(-45deg) translate(5px, -4px);
 }
 
-#side-menu {
+.side-menu {
   display: flex;
   height: 100%;
   width: 0%;
@@ -189,7 +207,7 @@
   transition: 0.35s ease-out;
 }
 
-#side-menu.open{
+.side-menu.open{
   width: 45%;
 }
 
@@ -214,7 +232,61 @@
 }
 
 .links li a {
-  padding: 1em;
+  padding-left: 1em;
+  width: 100%;
+  display: block;
   text-decoration: none;
   color: black;
+}
+
+.create-post {
+  text-decoration: none;
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  width: 45px;
+  height: 45px;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+i {
+  font-size: 1.4rem;
+}
+
+.alert-wrapper {
+  position: absolute;
+  top: 30;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  color: #fff;
+  padding: 1rem 1.1rem;
+}
+
+.paginate-btn {
+  /* padding: 1em 1.3em; */
+  font-family: Karla;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  cursor: pointer;
+  border: 0;
+  border-radius: 7px;
+  background-color: rgb(189, 189, 189);
+}
+
+.paginate-btn i {
+  font-size: 1.3em;
+}
+
+.paginate-btn:focus {
+  outline: none;
+}
+
+@media screen and (max-width:767px) {
+  .alert-wrapper {
+    max-width: 100%;
+  }
 }

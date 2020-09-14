@@ -1,10 +1,27 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import { UserContext } from '../../context/UserContext';
+import { auth } from '../../firebase';
 
 const Navbar = () => {
+  const [open, setOpen] = useState(false);
+  const { user } = useContext(UserContext);
+
+  const openSidebar = () => {
+    setOpen(!open);
+  };
+
+  const logout = () => {
+    auth.signOut();
+  };
+
   return (
     <Fragment>
-      <button className='hamburger'>
+      <button
+        onClick={openSidebar}
+        className={open ? 'hamburger close' : 'hamburger'}
+      >
         <div className='line'></div>
         <div className='line'></div>
         <div className='line'></div>
@@ -14,31 +31,31 @@ const Navbar = () => {
           Diary Sessions
         </Link>
         <ul>
-          <li className='nav-links'>
-            <Link to='/login'>Login</Link>
-          </li>
-          <li className='nav-links'>
-            <Link to='/signup'>Signup</Link>
-          </li>
+          {user ? (
+            <Fragment>
+              <li className='nav-links'>
+                <Link to='/posts'>Your Posts</Link>
+              </li>
+              <li className='nav-links'>
+                <a href='#!' onClick={logout}>
+                  Logout
+                </a>
+              </li>
+            </Fragment>
+          ) : (
+            <Fragment>
+              <li className='nav-links'>
+                <Link to='/login'>Login</Link>
+              </li>
+              <li className='nav-links'>
+                <Link to='/signup'>Signup</Link>
+              </li>
+            </Fragment>
+          )}
         </ul>
       </nav>
 
-      <div id='side-menu'>
-        <ul className='list-group links'>
-          <li>
-            <Link to='/login'>Login</Link>
-          </li>
-          <li>
-            <Link to='/signup'>Signup</Link>
-          </li>
-          {/* <li>
-            <Link href='#!'>Your Posts</Link>
-          </li>
-          <li>
-            <Link href='#!'>Logout</Link>
-          </li> */}
-        </ul>
-      </div>
+      <Sidebar open={open} />
     </Fragment>
   );
 };

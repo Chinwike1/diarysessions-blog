@@ -1,26 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+import { auth } from '../../firebase';
+import { AlertContext } from '../../context/AlertContext';
 
 const Login = () => {
   const [details, setDetails] = useState({
     email: '',
     password: '',
   });
+  const [redirect, setRedirect] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const { email, password } = details;
+  const { setAlert } = useContext(AlertContext);
 
   const getFields = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
 
   const logInUser = (e) => {
+    setLoading(true);
     e.preventDefault();
-    console.log(details);
-    setDetails({
-      email: '',
-      password: '',
-    });
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        setRedirect('/dashboard');
+        setDetails({
+          email: '',
+          password: '',
+        });
+        setLoading(false);
+      })
+      .catch((err) => {
+        setAlert('danger', err.message);
+        setLoading(false);
+      });
   };
+
+  if (redirect) {
+    return <Redirect to={redirect} />;
+  }
 
   return (
     <div className='login-form mb-max'>
@@ -52,11 +72,9 @@ const Login = () => {
           </div>
         </div>
         <div className='center'>
-          <input
-            type='submit'
-            className='btn btn-orange button'
-            value='Login'
-          />
+          <button type='submit' className='btn btn-orange button'>
+            {loading ? <i className='fa fa-spinner fa-pulse' /> : 'Login'}
+          </button>
         </div>
       </form>
       <p className='ta-c'>

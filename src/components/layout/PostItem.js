@@ -1,24 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../../context/UserContext';
+import Moment from 'react-moment';
 
-const PostItem = () => {
-  const apiData = {
-    displayName: 'Chizzy',
-    title: 'This is the title',
-    date: '28/09/2020',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit Culpa debitis saepe incidunt quis nulla nostrum totam magnam vel rerum omnis eius animi odit Neque temporibus',
-    user: null,
-  };
-
-  const { displayName, title, date, content, user } = apiData;
+const PostItem = ({ post }) => {
+  const { user } = useContext(UserContext);
+  const { displayName, title, createdAt, content } = post;
+  const parsedDate = createdAt.toDate();
 
   return (
-    <div className='post mb-max'>
+    <div className='post mb'>
       <div className='post-title'>
         <span>{title}</span>
         <span className='description float-right'>
-          - {displayName} on {date}
+          - {displayName} on
+          <Moment format='MMM Do YYYY'>{parsedDate}</Moment>
         </span>
       </div>
       <div className='post-content-guest'>{content}</div>

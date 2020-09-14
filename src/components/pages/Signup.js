@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import firebase from 'firebase/app';
 import db, { auth } from '../../firebase';
+import { AlertContext } from '../../context/AlertContext';
 
 const Signup = () => {
   const [details, setDetails] = useState({
@@ -10,6 +12,9 @@ const Signup = () => {
     password: '',
     confirmPassword: '',
   });
+  const [redirect, setRedirect] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
   const { displayName, email, password, confirmPassword } = details;
 
@@ -19,26 +24,39 @@ const Signup = () => {
 
   const signInUser = (e) => {
     e.preventDefault();
+    setLoading(true);
     if (password !== confirmPassword) {
-      alert('Password mismatch');
+      setAlert('danger', 'Password mismatch');
+      setLoading(false);
     } else {
-      auth.createUserWithEmailAndPassword(email, password).then((cred) => {
-        db.collection('users').doc(cred.user.uid).set({
-          displayName,
-          email,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      auth
+        .createUserWithEmailAndPassword(email, password)
+        .then((cred) => {
+          db.collection('users').doc(cred.user.uid).set({
+            displayName,
+            email,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+          cred.user.updateProfile({ displayName });
+          setDetails({
+            displayName: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+          });
+          setRedirect('/login');
+          setLoading(false);
+        })
+        .catch((err) => {
+          setAlert('danger', err.message);
+          setLoading(false);
         });
-        return cred.user.updateProfile({ displayName });
-      });
-
-      setDetails({
-        displayName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      });
     }
   };
+
+  if (redirect) {
+    return <Redirect to={redirect} />;
+  }
 
   return (
     <div className='signup-form'>
@@ -94,11 +112,9 @@ const Signup = () => {
           </div>
         </div>
         <div className='center'>
-          <input
-            type='submit'
-            className='btn btn-blue button'
-            value='Sign up'
-          />
+          <button type='submit' className='btn btn-blue button'>
+            {loading ? <i className='fa fa-spinner fa-pulse' /> : 'Sign Up'}
+          </button>
         </div>
       </form>
       <p className='ta-c'>

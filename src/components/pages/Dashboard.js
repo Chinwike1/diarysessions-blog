@@ -1,23 +1,22 @@
 import React, { useContext, Fragment } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
-import HeroSection from '../layout/HeroSection';
 import Posts from '../layout/Posts';
-import { PostsContext } from '../../context/PostsContext';
+import { auth } from '../../firebase';
 
 const Home = () => {
   const { user } = useContext(UserContext);
-  const { fetchMorePosts } = useContext(PostsContext);
 
-  if (user) {
-    return <Redirect to='/dashboard' />;
+  if (user === null) {
+    return <h2>Access Denied</h2>;
   }
-
   return (
     <Fragment>
-      <HeroSection />
       <div className='container'>
         <Posts />
+        <Link to='/create-post' className='btn-blue create-post'>
+          <i className='fa fa-plus'></i>
+        </Link>
       </div>
     </Fragment>
   );
