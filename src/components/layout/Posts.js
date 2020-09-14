@@ -6,16 +6,20 @@ import PaginateBtn from './PaginateBtn';
 const Posts = () => {
   const { posts } = useContext(PostsContext);
 
-  // return (
-  //   <Fragment>
-  //     {posts.map((post) => (
-  //       <PostItem post={post} key={Math.random()} />
-  //     ))}
-  //     {posts.length > 0 && <PaginateBtn />}
-  //   </Fragment>
-  // );
-
-  return posts.map((post) => <PostItem post={post} key={Math.random()} />);
+  return (
+    <Fragment>
+      <div className='posts-container'>
+        {posts.map((post) => (
+          <PostItem post={post} key={Math.random()} />
+        ))}
+      </div>
+      {posts.length > 0 && (
+        <div className='center'>
+          <PaginateBtn />
+        </div>
+      )}
+    </Fragment>
+  );
 };
 
 export default Posts;

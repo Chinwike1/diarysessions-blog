@@ -4,17 +4,18 @@ import { UserContext } from '../../context/UserContext';
 import { Link } from 'react-router-dom';
 import { AlertContext } from '../../context/AlertContext';
 import db from '../../firebase';
+import { PostsContext } from '../../context/PostsContext';
 
 const CreatePost = () => {
   const [post, setPost] = useState({
     title: '',
     content: '',
   });
-  const [loading, setLoading] = useState(false);
 
   const { title, content } = post;
   const { user } = useContext(UserContext);
   const { setAlert } = useContext(AlertContext);
+  const { loading, createPost } = useContext(PostsContext);
 
   if (user === null) {
     return <h2>Access Denied</h2>;
@@ -26,28 +27,9 @@ const CreatePost = () => {
 
   const submitPost = (e) => {
     e.preventDefault();
-    setLoading(true);
-    db.collection('posts')
-      .doc()
-      .set({
-        title,
-        content,
-        userId: user.uid,
-        displayName: user.displayName,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      })
-      .then(() => {
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        setAlert('danger', err.message);
-      });
-    setPost({ title: '', content: '' });
-    setAlert('success', 'Post published successfully!');
+    if (title === '' || content === '') return;
+    createPost(title, content);
   };
-
-  // createPost(title, content);
 
   return (
     <div className='container'>
@@ -73,10 +55,10 @@ const CreatePost = () => {
               value={content}
             ></textarea>
           </div>
-          <button type='submit' className='button paginate-btn'>
-            {loading ? <i className='fa fa-spinner fa-pulse' /> : 'More'}
+          <button type='submit' className='button btn btn-orange mr'>
+            {loading ? <i className='fa fa-spinner fa-pulse' /> : 'Publish'}
           </button>
-          <Link to='/dashboard' className='button btn btn-bg btn-neutral'>
+          <Link to='/dashboard' className='button btn btn-neutral'>
             Back
           </Link>
         </form>

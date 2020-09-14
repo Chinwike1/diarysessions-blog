@@ -85,7 +85,7 @@
 }
 
 .button i {
-  font-size: 1.3em;
+  font-size: 1.2em;
 }
 
 .form-wrapper {
@@ -278,11 +278,18 @@ i {
 }
 
 .paginate-btn i {
-  font-size: 1.3em;
+  font-size: 1.2em;
 }
 
 .paginate-btn:focus {
   outline: none;
+}
+
+.posts-container {
+  padding: 1em;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax( 350px, 1fr));
+  grid-gap: 1.3em;
 }
 
 @media screen and (max-width:767px) {

@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import firebase from 'firebase';
 import db from '../firebase';
 import { AlertContext } from './AlertContext';
+import { UserContext } from './UserContext';
 
 export const PostsContext = createContext();
 
@@ -18,6 +19,7 @@ const PostsContextProivder = (props) => {
   const postsRef = db.collection('posts');
   const postsRefLimit = db.collection('posts').limit(1);
 
+  const { user } = useContext(UserContext);
   const { setAlert } = useContext(AlertContext);
 
   const getPosts = async () => {
@@ -51,28 +53,31 @@ const PostsContextProivder = (props) => {
       });
   };
 
-  // const createPost = (title, content) => {
-  //   setLoading(true);
-  //   db.collection('posts')
-  //     .doc()
-  //     .set({
-  //       title,
-  //       content,
-  //       userId: user.uid,
-  //       displayName: user.displayName,
-  //       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-  //     })
-  //     .then(() => {
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       setLoading(false);
-  //       setAlert('danger', err.message);
-  //     });
-  // };
+  const createPost = (title, content) => {
+    setLoading(true);
+    db.collection('posts')
+      .doc()
+      .set({
+        title,
+        content,
+        userId: user.uid,
+        displayName: user.displayName,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then(() => {
+        setLoading(false);
+        setAlert('success', 'Post published sucessfully!');
+      })
+      .catch((err) => {
+        setLoading(false);
+        setAlert('danger', err.message);
+      });
+  };
 
   return (
-    <PostsContext.Provider value={{ loading, posts, getPosts, fetchMorePosts }}>
+    <PostsContext.Provider
+      value={{ loading, posts, getPosts, createPost, fetchMorePosts }}
+    >
       {props.children}
     </PostsContext.Provider>
   );
