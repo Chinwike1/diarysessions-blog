@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
-import firebase from 'firebase';
-import { UserContext } from '../../context/UserContext';
 import { Link } from 'react-router-dom';
-import { AlertContext } from '../../context/AlertContext';
+import firebase from 'firebase';
 import db from '../../firebase';
+import { UserContext } from '../../context/UserContext';
+import { AlertContext } from '../../context/AlertContext';
 import { PostsContext } from '../../context/PostsContext';
 
 const CreatePost = () => {

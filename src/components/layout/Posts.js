@@ -8,6 +8,7 @@ const Posts = () => {
 
   return (
     <Fragment>
+      <h2 className='primary-color mb-2'>All Posts</h2>
       <div className='posts-container'>
         {posts.map((post) => (
           <PostItem post={post} key={Math.random()} />

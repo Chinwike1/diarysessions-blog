@@ -32,6 +32,15 @@
   margin-bottom: 0.8em;
   font-size: 1.2em;
   font-weight: bold;
+  overflow: hidden;
+  width: inherit;
+}
+
+.post-title .headline, 
+.post-title .description {
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
 }
 
 .post-title .description {
@@ -41,12 +50,13 @@
   color: rgb(194, 193, 193);
 }
 
-.post-content-guest {
+.post-content {
   position: relative;
   height: 4.8em;
+  overflow: hidden;
 }
 
-.post-content-guest:after {
+.post-content:after {
   content: '';
   text-align: right;
   position: absolute;
@@ -286,10 +296,10 @@ i {
 }
 
 .posts-container {
-  padding: 1em;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax( 350px, 1fr));
   grid-gap: 1.3em;
+  justify-content: center;
 }
 
 @media screen and (max-width:767px) {
