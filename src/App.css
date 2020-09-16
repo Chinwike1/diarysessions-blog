@@ -302,8 +302,49 @@ i {
   justify-content: center;
 }
 
+.single-post .title {
+  text-decoration: underline;
+}
+
+.single-post .description {
+  font-size: 1em;
+  font-weight: normal;
+  color: rgb(194, 193, 193);
+}
+
 @media screen and (max-width:767px) {
   .alert-wrapper {
     max-width: 100%;
   }
+}
+
+.my-posts li {
+  display: flex;
+}
+
+.my-posts li .description {
+  font-size: 0.9em;
+  color: #adadad;
+  font-style: italic;
+}
+
+.my-posts li a {
+  flex: 1;
+}
+
+.my-posts li i {
+  align-self: center;
+  margin-left: -1.85em;
+  margin-right: 1em;
+  font-size: 1.1em;
+  cursor: pointer;
+}
+
+.delete-post {
+  color: #adadad;
+  transition: color 0.35s ease-out;
+}
+
+.delete-post:hover {
+  color: #f24b34;
 }

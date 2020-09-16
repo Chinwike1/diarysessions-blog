@@ -3,13 +3,11 @@ import { Redirect } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import HeroSection from '../layout/HeroSection';
 import Posts from '../layout/Posts';
-import { PostsContext } from '../../context/PostsContext';
 
 const Home = () => {
   const { user } = useContext(UserContext);
-  const { fetchMorePosts } = useContext(PostsContext);
 
-  if (user) {
+  if (user !== 'loading' && user !== null) {
     return <Redirect to='/dashboard' />;
   }
 

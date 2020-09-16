@@ -1,14 +1,16 @@
 import React, { useContext, Fragment } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import Posts from '../layout/Posts';
-import { auth } from '../../firebase';
 
 const Home = () => {
   const { user } = useContext(UserContext);
 
+  if (user === 'loading') {
+    return <h2 className='ta-c'>Loading...</h2>;
+  }
   if (user === null) {
-    return <h2>Access Denied</h2>;
+    return <h2 className='ta-c'>Couldn't fetch your details</h2>;
   }
   return (
     <Fragment>

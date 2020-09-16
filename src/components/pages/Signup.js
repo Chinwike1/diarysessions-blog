@@ -72,6 +72,7 @@ const Signup = () => {
               value={displayName}
               className='form-field'
               placeholder='Display Name'
+              required
             />
           </div>
 
@@ -84,6 +85,7 @@ const Signup = () => {
               value={email}
               className='form-field'
               placeholder='Email'
+              required
             />
           </div>
 
@@ -96,6 +98,7 @@ const Signup = () => {
               value={password}
               className='form-field'
               placeholder='Password'
+              required
             />
           </div>
 
@@ -108,6 +111,7 @@ const Signup = () => {
               value={confirmPassword}
               className='form-field'
               placeholder='Confirm password'
+              required
             />
           </div>
         </div>

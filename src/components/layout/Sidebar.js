@@ -13,10 +13,10 @@ const Sidebar = ({ open }) => {
   return (
     <div className={open ? 'side-menu open' : 'side-menu'}>
       <ul className='list-group links'>
-        {user ? (
+        {user !== 'loading' && user !== null ? (
           <Fragment>
             <li>
-              <Link to='/posts'>Your Posts</Link>
+              <Link to='/myposts'>Your Posts</Link>
             </li>
             <li>
               <a href='#!' onClick={logout}>

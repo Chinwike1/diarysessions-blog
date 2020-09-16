@@ -5,14 +5,15 @@ import Moment from 'react-moment';
 
 const PostItem = ({ post }) => {
   const { user } = useContext(UserContext);
-  const { displayName, title, content, createdAt } = post;
-  const parsedDate = createdAt.toDate();
+  const { id } = post;
+  const { displayName, title, content, createdAt } = post.data;
 
   return (
     <div className='post mb'>
       <div className='post-title'>
         <span className='description mb float-right'>
-          - {displayName} on <Moment format='MMM Do YYYY'>{parsedDate}</Moment>
+          - {displayName} on{' '}
+          <Moment format='MMM Do YYYY'>{createdAt.toDate()}</Moment>
         </span>
         <span className='headline'>{title}</span>
       </div>
@@ -21,10 +22,10 @@ const PostItem = ({ post }) => {
       </div>
       <div className='bottom-panel'>
         {user ? (
-          <a href='#!' className='post-link float-right'>
+          <Link to={`/post/${id}`} className='post-link float-right'>
             Read Post
             <i className='fa fa-arrow-right'></i>
-          </a>
+          </Link>
         ) : (
           <Link to='/login' className='post-link float-right'>
             Login to read

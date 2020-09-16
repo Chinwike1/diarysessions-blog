@@ -20,8 +20,9 @@ const Login = () => {
   };
 
   const logInUser = (e) => {
-    setLoading(true);
     e.preventDefault();
+    setLoading(true);
+    if (email === '' || password === '') return;
     auth
       .signInWithEmailAndPassword(email, password)
       .then(() => {

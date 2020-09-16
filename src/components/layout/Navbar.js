@@ -31,10 +31,10 @@ const Navbar = () => {
           Diary Sessions
         </Link>
         <ul>
-          {user ? (
+          {user !== 'loading' && user !== null ? (
             <Fragment>
               <li className='nav-links'>
-                <Link to='/posts'>Your Posts</Link>
+                <Link to='/myposts'>Your Posts</Link>
               </li>
               <li className='nav-links'>
                 <a href='#!' onClick={logout}>

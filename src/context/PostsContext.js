@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import db from '../firebase';
 import { AlertContext } from './AlertContext';
 import { UserContext } from './UserContext';
@@ -13,6 +13,7 @@ const PostsContextProivder = (props) => {
   }, []);
 
   const [posts, setPosts] = useState([]);
+  const [usersPosts, setUsersPosts] = useState([]);
   const [lastVisible, setLastVisible] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +28,10 @@ const PostsContextProivder = (props) => {
       .get()
       .then((snapshots) => {
         setLastVisible(snapshots.docs[snapshots.docs.length - 1]);
-        const firestorePosts = snapshots.docs.map((doc) => doc.data());
+        const firestorePosts = snapshots.docs.map((doc) => ({
+          id: doc.id,
+          data: doc.data(),
+        }));
         setPosts(firestorePosts);
       })
       .catch((err) => {
@@ -43,7 +47,10 @@ const PostsContextProivder = (props) => {
       .get()
       .then((snapshots) => {
         setLastVisible(snapshots.docs[snapshots.docs.length - 1]);
-        const firestorePosts = snapshots.docs.map((doc) => doc.data());
+        const firestorePosts = snapshots.docs.map((doc) => ({
+          id: doc.id,
+          data: doc.data(),
+        }));
         setPosts(posts.concat(firestorePosts));
         setLoading(false);
       })
@@ -53,9 +60,10 @@ const PostsContextProivder = (props) => {
       });
   };
 
-  const createPost = (title, content) => {
+  const createPost = async (title, content) => {
     setLoading(true);
-    db.collection('posts')
+    await db
+      .collection('posts')
       .doc()
       .set({
         title,
@@ -74,9 +82,28 @@ const PostsContextProivder = (props) => {
       });
   };
 
+  const getUsersPosts = async () => {
+    await db
+      .collection('posts')
+      .where('userId', '==', user.uid)
+      .get()
+      .then((snapshot) => {
+        const userPosts = snapshot.docs.map((doc) => doc.data());
+        setUsersPosts(userPosts);
+      });
+  };
+
   return (
     <PostsContext.Provider
-      value={{ loading, posts, getPosts, createPost, fetchMorePosts }}
+      value={{
+        loading,
+        usersPosts,
+        getUsersPosts,
+        posts,
+        getPosts,
+        createPost,
+        fetchMorePosts,
+      }}
     >
       {props.children}
     </PostsContext.Provider>

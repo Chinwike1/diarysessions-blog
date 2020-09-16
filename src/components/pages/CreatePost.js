@@ -1,7 +1,5 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import firebase from 'firebase';
-import db from '../../firebase';
 import { UserContext } from '../../context/UserContext';
 import { AlertContext } from '../../context/AlertContext';
 import { PostsContext } from '../../context/PostsContext';
@@ -17,8 +15,12 @@ const CreatePost = () => {
   const { setAlert } = useContext(AlertContext);
   const { loading, createPost } = useContext(PostsContext);
 
+  if (user === 'loading') {
+    return <h2 className='ta-c'>Loading..</h2>;
+  }
+
   if (user === null) {
-    return <h2>Access Denied</h2>;
+    return <h2 className='ta-c'>Couldn't fetch your details</h2>;
   }
 
   const getFields = (e) => {
@@ -28,7 +30,11 @@ const CreatePost = () => {
   const submitPost = (e) => {
     e.preventDefault();
     if (title === '' || content === '') return;
-    createPost(title, content);
+    if (content.length < 175) {
+      setAlert('danger', 'Content must be up to 175 characters');
+    } else {
+      createPost(title, content);
+    }
   };
 
   return (
@@ -43,7 +49,8 @@ const CreatePost = () => {
               onChange={getFields}
               name='title'
               value={title}
-              className='form-field'
+              className='form-input'
+              required
             />
 
             <label htmlFor='Post'>Post</label>
@@ -53,6 +60,7 @@ const CreatePost = () => {
               onChange={getFields}
               name='content'
               value={content}
+              required
             ></textarea>
           </div>
           <button type='submit' className='button btn btn-orange mr'>
