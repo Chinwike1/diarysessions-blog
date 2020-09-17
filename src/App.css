@@ -108,14 +108,14 @@
 .signup-form {
   margin: 3em auto;
   padding: 2.7em;
-  min-width: 355px;
+  max-width: 355px;
   box-shadow: 0 2px 2px 2px rgba(9, 9, 9, 0.23); 
 }
 
 @media screen and (max-width: 400px) {
   .login-form,
   .signup-form {
-    max-width: 150px;
+    max-width: 270px;
   }
 }
 

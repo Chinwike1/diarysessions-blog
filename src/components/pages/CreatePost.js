@@ -5,12 +5,12 @@ import { AlertContext } from '../../context/AlertContext';
 import { PostsContext } from '../../context/PostsContext';
 
 const CreatePost = () => {
-  const [post, setPost] = useState({
+  const [details, setDetails] = useState({
     title: '',
     content: '',
   });
 
-  const { title, content } = post;
+  const { title, content } = details;
   const { user } = useContext(UserContext);
   const { setAlert } = useContext(AlertContext);
   const { loading, createPost } = useContext(PostsContext);
@@ -24,7 +24,7 @@ const CreatePost = () => {
   }
 
   const getFields = (e) => {
-    setPost({ ...post, [e.target.name]: e.target.value });
+    setDetails({ ...details, [e.target.name]: e.target.value });
   };
 
   const submitPost = (e) => {
@@ -33,7 +33,7 @@ const CreatePost = () => {
     if (content.length < 175) {
       setAlert('danger', 'Content must be up to 175 characters');
     } else {
-      createPost(title, content);
+      createPost(title, content, setDetails);
     }
   };
 

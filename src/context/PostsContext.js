@@ -17,50 +17,47 @@ const PostsContextProivder = (props) => {
   const [lastVisible, setLastVisible] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const postsRef = db.collection('posts');
-  const postsRefLimit = db.collection('posts').limit(1);
+  const postsRef = db.collection('posts').orderBy('createdAt', 'desc');
+  const postsRefLimit = db
+    .collection('posts')
+    .orderBy('createdAt', 'desc')
+    .limit(1);
 
-  const { user } = useContext(UserContext);
+  const { user, getUser } = useContext(UserContext);
   const { setAlert } = useContext(AlertContext);
 
   const getPosts = async () => {
-    await postsRefLimit
-      .get()
-      .then((snapshots) => {
-        setLastVisible(snapshots.docs[snapshots.docs.length - 1]);
-        const firestorePosts = snapshots.docs.map((doc) => ({
-          id: doc.id,
-          data: doc.data(),
-        }));
-        setPosts(firestorePosts);
-      })
-      .catch((err) => {
-        setAlert('danger', err.message);
-      });
+    try {
+      const data = await postsRefLimit.get();
+      setLastVisible(data.docs[data.docs.length - 1]);
+      const firestorePosts = data.docs.map((doc) => ({
+        id: doc.id,
+        data: doc.data(),
+      }));
+      setPosts(firestorePosts);
+    } catch (err) {
+      setAlert('danger', err.message);
+    }
   };
 
   const fetchMorePosts = async () => {
     setLoading(true);
-    await postsRef
-      .startAfter(lastVisible)
-      .limit(1)
-      .get()
-      .then((snapshots) => {
-        setLastVisible(snapshots.docs[snapshots.docs.length - 1]);
-        const firestorePosts = snapshots.docs.map((doc) => ({
-          id: doc.id,
-          data: doc.data(),
-        }));
-        setPosts(posts.concat(firestorePosts));
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        setAlert('danger', err.message);
-      });
+    try {
+      const data = await postsRef.startAfter(lastVisible).limit(1).get();
+      setLastVisible(data.docs[data.docs.length - 1]);
+      const firestorePosts = data.docs.map((doc) => ({
+        id: doc.id,
+        data: doc.data(),
+      }));
+      setPosts(posts.concat(firestorePosts));
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      setAlert('danger', err.message);
+    }
   };
 
-  const createPost = async (title, content) => {
+  const createPost = async (title, content, setDetails) => {
     setLoading(true);
     await db
       .collection('posts')
@@ -73,6 +70,7 @@ const PostsContextProivder = (props) => {
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       })
       .then(() => {
+        setDetails({ title: '', content: '' });
         setLoading(false);
         setAlert('success', 'Post published sucessfully!');
       })
@@ -83,13 +81,37 @@ const PostsContextProivder = (props) => {
   };
 
   const getUsersPosts = async () => {
+    try {
+      const user = await getUser();
+
+      const data = await db
+        .collection('posts')
+        .where('userId', '==', user.uid)
+        .get();
+
+      const posts = data.docs.map((doc) => ({
+        id: doc.id,
+        data: doc.data(),
+      }));
+      setUsersPosts(posts);
+    } catch (err) {
+      setAlert('danger', 'Unable to fetch your posts.');
+    }
+  };
+
+  const deletePost = async (id) => {
     await db
       .collection('posts')
-      .where('userId', '==', user.uid)
-      .get()
-      .then((snapshot) => {
-        const userPosts = snapshot.docs.map((doc) => doc.data());
-        setUsersPosts(userPosts);
+      .doc(id)
+      .delete()
+      .then(() => {
+        const filteredPosts = usersPosts.filter((post) => {
+          return id !== post.id;
+        });
+        setUsersPosts(filteredPosts);
+      })
+      .catch((err) => {
+        setAlert('warning', err.message);
       });
   };
 
@@ -102,6 +124,7 @@ const PostsContextProivder = (props) => {
         posts,
         getPosts,
         createPost,
+        deletePost,
         fetchMorePosts,
       }}
     >

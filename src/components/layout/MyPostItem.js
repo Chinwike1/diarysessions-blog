@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
+import { PostsContext } from '../../context/PostsContext';
 
-const MyPostItem = ({ post, deletePost, id }) => {
+const MyPostItem = ({ post, id }) => {
+  const { deletePost } = useContext(PostsContext);
+
   const confirmDelete = () => {
-    if (window.confirm('Are you sure?')) {
+    if (window.confirm('Are you sure you want to delete this post?')) {
       deletePost(id);
     } else {
       return;
