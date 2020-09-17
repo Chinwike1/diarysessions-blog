@@ -1,43 +1,52 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
-import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import db from '../../firebase';
+import MyPostItem from '../layout/MyPostItem';
 
 const MyPosts = () => {
-  const { getUser } = useContext(UserContext);
-  const [userId, setUserId] = useState('loading');
+  const { user, getUser } = useContext(UserContext);
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const getUsersPosts = async () => {
-      getUser()
-        .then((user) => {
-          setUserId(user.uid);
-        })
-        .catch(() => {
-          setUserId(null);
-        });
+      try {
+        const user = await getUser();
 
-      await db
-        .collection('posts')
-        .where('userId', '==', userId)
-        .get()
-        .then((snapshot) => {
-          const posts = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            data: doc.data(),
-          }));
-          setPosts(posts);
-        });
+        const data = await db
+          .collection('posts')
+          .where('userId', '==', user.uid)
+          .get();
+
+        const posts = data.docs.map((doc) => ({
+          id: doc.id,
+          data: doc.data(),
+        }));
+        setPosts(posts);
+      } catch (err) {
+        console.log(err.message);
+      }
     };
     getUsersPosts();
-  }, [getUser, userId]);
-  const [posts, setPosts] = useState([]);
+  }, [getUser]);
 
-  if (userId === 'loading') {
+  const deletePost = async (id) => {
+    const filteredPosts = posts.filter((post) => {
+      return id !== post.id;
+    });
+    setPosts(filteredPosts);
+
+    try {
+      await db.collection('posts').doc(id).delete();
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  if (user === 'loading') {
     return <h2 className='ta-c'>Loading...</h2>;
   }
-  if (userId === null) {
+  if (user === null) {
     return <h2 className='ta-c'>Couldn't fetch your details</h2>;
   }
 
@@ -49,18 +58,12 @@ const MyPosts = () => {
         <Fragment>
           <ul className='list-group my-posts'>
             {posts.map((post) => (
-              <li>
-                <Link to={`/post/${post.id}`} className='list-link'>
-                  {post.data.title}{' '}
-                  <span className='description ml'>
-                    on{' '}
-                    <Moment format='MMM Do YYYY, h:mm:ss a'>
-                      {post.data.createdAt.toDate()}
-                    </Moment>
-                  </span>
-                </Link>
-                <i className='fa fa-trash delete-post'></i>
-              </li>
+              <MyPostItem
+                post={post}
+                key={post.id}
+                id={post.id}
+                deletePost={deletePost}
+              />
             ))}
           </ul>
           <Link to='/dashboard' className='mt btn paginate-btn black-text'>
