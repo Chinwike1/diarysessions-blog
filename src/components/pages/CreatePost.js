@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { UserContext } from '../../context/UserContext';
 import { AlertContext } from '../../context/AlertContext';
 import { PostsContext } from '../../context/PostsContext';
 
@@ -11,17 +10,8 @@ const CreatePost = () => {
   });
 
   const { title, content } = details;
-  const { user } = useContext(UserContext);
   const { setAlert } = useContext(AlertContext);
   const { loading, createPost } = useContext(PostsContext);
-
-  if (user === 'loading') {
-    return <h2 className='ta-c'>Loading..</h2>;
-  }
-
-  if (user === null) {
-    return <h2 className='ta-c'>Couldn't fetch your details</h2>;
-  }
 
   const getFields = (e) => {
     setDetails({ ...details, [e.target.name]: e.target.value });

@@ -1,29 +1,23 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AlertContext } from '../../context/AlertContext';
-import { UserContext } from '../../context/UserContext';
 import db from '../../firebase';
 
 const Post = () => {
   const { postId } = useParams();
-  const { user } = useContext(UserContext);
   const { setAlert } = useContext(AlertContext);
 
   useEffect(() => {
     const fetchPost = async () => {
       setLoading(true);
-      await db
-        .collection('posts')
-        .doc(postId)
-        .get()
-        .then((snapshot) => {
-          setPost(snapshot.data());
-          setLoading(false);
-        })
-        .catch((err) => {
-          setAlert('danger', err.message);
-          setLoading(false);
-        });
+      try {
+        const data = await db.collection('posts').doc(postId).get();
+        setPost(data.data());
+        setLoading(false);
+      } catch (err) {
+        setAlert('danger', err.message);
+        setLoading(false);
+      }
     };
     fetchPost();
   }, [postId, setAlert]);
@@ -31,10 +25,6 @@ const Post = () => {
   const [post, setPost] = useState([]);
   const [loading, setLoading] = useState(false);
   const { displayName, title, content } = post;
-
-  if (user === null) {
-    return <h2 className='ta-c'>Access Denied</h2>;
-  }
 
   if (loading) {
     return (

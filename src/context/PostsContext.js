@@ -53,7 +53,7 @@ const PostsContextProivder = (props) => {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      setAlert('danger', err.message);
+      setAlert('info', "You've reached the last post");
     }
   };
 

@@ -12,6 +12,7 @@ import Alerts from './components/layout/Alerts';
 import AlertContextProvider from './context/AlertContext';
 import Post from './components/pages/Post';
 import MyPosts from './components/pages/MyPosts';
+import PrivateRoute from './components/routing/PrivateRoute';
 
 function App() {
   return (
@@ -23,12 +24,12 @@ function App() {
             <Alerts />
             <Switch>
               <Route exact path='/' component={Home} />
-              <Route exact path='/dashboard' component={Dashboard} />
               <Route exact path='/login' component={Login} />
               <Route exact path='/signup' component={Signup} />
-              <Route exact path='/post/:postId' component={Post} />
-              <Route exact path='/myposts' component={MyPosts} />
-              <Route exact path='/create-post' component={CreatePost} />
+              <PrivateRoute exact path='/dashboard' component={Dashboard} />
+              <PrivateRoute exact path='/post/:postId' component={Post} />
+              <PrivateRoute exact path='/myposts' component={MyPosts} />
+              <PrivateRoute exact path='/create-post' component={CreatePost} />
             </Switch>
           </Router>
         </div>
