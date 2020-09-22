@@ -1,4 +1,4 @@
-This is a blogging app made with React & Firebase. The live site is located [here]() 
+This is a blogging app made with React & Firebase. The live site is located [here](https://diarysessions-blog.web.app) 
 
 ### Available Scripts
 
