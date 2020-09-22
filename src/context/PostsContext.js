@@ -1,8 +1,17 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useEffect, useContext, useReducer } from 'react';
 import firebase from 'firebase/app';
 import db from '../firebase';
 import { AlertContext } from './AlertContext';
 import { UserContext } from './UserContext';
+import { postsReducer } from '../reducers/postsReducer';
+import {
+  DELETE_POST,
+  FETCH_MORE,
+  GET_POSTS,
+  GET_USERS_POSTS,
+  LOADING_FALSE,
+  LOADING_TRUE,
+} from './types';
 
 export const PostsContext = createContext();
 
@@ -12,10 +21,14 @@ const PostsContextProivder = (props) => {
     // eslint-disable-next-line
   }, []);
 
-  const [posts, setPosts] = useState([]);
-  const [usersPosts, setUsersPosts] = useState([]);
-  const [lastVisible, setLastVisible] = useState({});
-  const [loading, setLoading] = useState(false);
+  const initialState = {
+    posts: [],
+    usersPosts: [],
+    lastVisible: null,
+    loading: false,
+  };
+
+  const [state, dispatch] = useReducer(postsReducer, initialState);
 
   const postsRef = db.collection('posts').orderBy('createdAt', 'desc');
   const postsRefLimit = db
@@ -29,36 +42,25 @@ const PostsContextProivder = (props) => {
   const getPosts = async () => {
     try {
       const data = await postsRefLimit.get();
-      setLastVisible(data.docs[data.docs.length - 1]);
-      const firestorePosts = data.docs.map((doc) => ({
-        id: doc.id,
-        data: doc.data(),
-      }));
-      setPosts(firestorePosts);
+      dispatch({ type: GET_POSTS, payload: data });
     } catch (err) {
       setAlert('danger', err.message);
     }
   };
 
   const fetchMorePosts = async () => {
-    setLoading(true);
+    dispatch({ type: LOADING_TRUE });
     try {
-      const data = await postsRef.startAfter(lastVisible).limit(1).get();
-      setLastVisible(data.docs[data.docs.length - 1]);
-      const firestorePosts = data.docs.map((doc) => ({
-        id: doc.id,
-        data: doc.data(),
-      }));
-      setPosts(posts.concat(firestorePosts));
-      setLoading(false);
+      const data = await postsRef.startAfter(state.lastVisible).limit(1).get();
+      dispatch({ type: FETCH_MORE, payload: data });
     } catch (err) {
-      setLoading(false);
+      dispatch({ type: LOADING_FALSE });
       setAlert('info', "You've reached the last post");
     }
   };
 
   const createPost = async (title, content, setDetails) => {
-    setLoading(true);
+    dispatch({ type: LOADING_TRUE });
     await db
       .collection('posts')
       .doc()
@@ -71,11 +73,11 @@ const PostsContextProivder = (props) => {
       })
       .then(() => {
         setDetails({ title: '', content: '' });
-        setLoading(false);
+        dispatch({ type: LOADING_FALSE });
         setAlert('success', 'Post published sucessfully!');
       })
       .catch((err) => {
-        setLoading(false);
+        dispatch({ type: LOADING_FALSE });
         setAlert('danger', err.message);
       });
   };
@@ -89,11 +91,7 @@ const PostsContextProivder = (props) => {
         .where('userId', '==', user.uid)
         .get();
 
-      const posts = data.docs.map((doc) => ({
-        id: doc.id,
-        data: doc.data(),
-      }));
-      setUsersPosts(posts);
+      dispatch({ type: GET_USERS_POSTS, payload: data });
     } catch (err) {
       setAlert('danger', 'Unable to fetch your posts.');
     }
@@ -105,10 +103,7 @@ const PostsContextProivder = (props) => {
       .doc(id)
       .delete()
       .then(() => {
-        const filteredPosts = usersPosts.filter((post) => {
-          return id !== post.id;
-        });
-        setUsersPosts(filteredPosts);
+        dispatch({ type: DELETE_POST, payload: id });
       })
       .catch((err) => {
         setAlert('warning', err.message);
@@ -118,10 +113,10 @@ const PostsContextProivder = (props) => {
   return (
     <PostsContext.Provider
       value={{
-        loading,
-        usersPosts,
+        loading: state.loading,
+        usersPosts: state.usersPosts,
         getUsersPosts,
-        posts,
+        posts: state.posts,
         getPosts,
         createPost,
         deletePost,
