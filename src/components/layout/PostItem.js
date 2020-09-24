@@ -18,7 +18,7 @@ const PostItem = ({ post }) => {
         <span className='headline'>{title}</span>
       </div>
       <div className='post-content'>
-        {user === null ? content.slice(0, 175) : content}
+        {user === null || user === 'loading' ? content.slice(0, 175) : content}
       </div>
       <div className='bottom-panel'>
         {user ? (

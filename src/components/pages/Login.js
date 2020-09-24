@@ -57,6 +57,7 @@ const Login = () => {
               value={email}
               className='form-field'
               placeholder='Email'
+              required
             />
           </div>
 
@@ -69,6 +70,7 @@ const Login = () => {
               value={password}
               className='form-field'
               placeholder='Password'
+              required
             />
           </div>
         </div>

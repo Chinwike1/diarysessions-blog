@@ -36,7 +36,7 @@ const PostsContextProivder = (props) => {
     .orderBy('createdAt', 'desc')
     .limit(1);
 
-  const { user, getUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const { setAlert } = useContext(AlertContext);
 
   const getPosts = async () => {
@@ -84,8 +84,6 @@ const PostsContextProivder = (props) => {
 
   const getUsersPosts = async () => {
     try {
-      const user = await getUser();
-
       const data = await db
         .collection('posts')
         .where('userId', '==', user.uid)
