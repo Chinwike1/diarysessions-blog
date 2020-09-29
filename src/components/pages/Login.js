@@ -26,12 +26,12 @@ const Login = () => {
     auth
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        setRedirect('/dashboard');
         setDetails({
           email: '',
           password: '',
         });
         setLoading(false);
+        setRedirect('/dashboard');
       })
       .catch((err) => {
         setAlert('danger', err.message);

@@ -22,7 +22,7 @@ const Signup = () => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
 
-  const signInUser = (e) => {
+  const signUpUser = (e) => {
     e.preventDefault();
     setLoading(true);
     if (password !== confirmPassword) {
@@ -44,8 +44,8 @@ const Signup = () => {
             password: '',
             confirmPassword: '',
           });
-          setRedirect('/login');
           setLoading(false);
+          setRedirect('/login');
         })
         .catch((err) => {
           setAlert('danger', err.message);
@@ -61,7 +61,7 @@ const Signup = () => {
   return (
     <div className='signup-form'>
       <p className='heading'>Become a Memeber!</p>
-      <form onSubmit={signInUser}>
+      <form onSubmit={signUpUser}>
         <div className='form-group'>
           <div className='form-wrap'>
             <i className='fa fa-user icon'></i>

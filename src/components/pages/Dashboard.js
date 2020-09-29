@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import Posts from '../layout/Posts';
 
-const Home = () => {
+const Dashboard = () => {
   return (
     <Fragment>
       <div className='container'>
@@ -15,4 +15,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Dashboard;

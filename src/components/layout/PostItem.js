@@ -21,14 +21,14 @@ const PostItem = ({ post }) => {
         {user === null || user === 'loading' ? content.slice(0, 175) : content}
       </div>
       <div className='bottom-panel'>
-        {user ? (
-          <Link to={`/post/${id}`} className='post-link float-right'>
-            Read Post
+        {user === null || user === 'loading' ? (
+          <Link to='/login' className='post-link float-right'>
+            Login to Read
             <i className='fa fa-arrow-right'></i>
           </Link>
         ) : (
-          <Link to='/login' className='post-link float-right'>
-            Login to read
+          <Link to={`/post/${id}`} className='post-link float-right'>
+            Read Post
             <i className='fa fa-arrow-right'></i>
           </Link>
         )}
