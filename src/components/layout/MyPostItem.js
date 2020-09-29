@@ -17,11 +17,11 @@ const MyPostItem = ({ post, id }) => {
   return (
     <li>
       <Link to={`/post/${post.id}`} className='list-link'>
-        {post.data.title}{' '}
+        {post.title}{' '}
         <span className='description ml'>
           on{' '}
           <Moment format='MMM Do YYYY, h:mm:ss a'>
-            {post.data.createdAt.toDate()}
+            {post.createdAt.toDate()}
           </Moment>
         </span>
       </Link>

@@ -8,7 +8,8 @@ const MyPosts = () => {
 
   useEffect(() => {
     getUsersPosts();
-  }, [getUsersPosts]);
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <div className='container'>
@@ -18,7 +19,7 @@ const MyPosts = () => {
         <Fragment>
           <ul className='list-group my-posts'>
             {usersPosts.map((post) => (
-              <MyPostItem post={post} key={post.id} id={post.id} />
+              <MyPostItem post={post.data} key={post.id} id={post.id} />
             ))}
           </ul>
           <Link to='/dashboard' className='mt btn paginate-btn black-text'>
