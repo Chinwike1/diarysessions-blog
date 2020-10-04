@@ -7,7 +7,7 @@ const MyPostItem = ({ post, id }) => {
   const { deletePost } = useContext(PostsContext);
 
   const confirmDelete = () => {
-    if (window.confirm('Are you sure you want to delete this post?')) {
+    if (window.confirm('If this post is deleted, it will be gone forever. Do you want to proceed?')) {
       deletePost(id);
     } else {
       return;
