@@ -7,7 +7,11 @@ const MyPostItem = ({ post, id }) => {
   const { deletePost } = useContext(PostsContext);
 
   const confirmDelete = () => {
-    if (window.confirm('If this post is deleted, it will be gone forever. Do you want to proceed?')) {
+    if (
+      window.confirm(
+        'If this post is deleted, it will be gone forever. Do you want to proceed?'
+      )
+    ) {
       deletePost(id);
     } else {
       return;
@@ -16,7 +20,7 @@ const MyPostItem = ({ post, id }) => {
 
   return (
     <li>
-      <Link to={`/post/${post.id}`} className='list-link'>
+      <Link to={`/post/${id}`} className='list-link'>
         {post.title}{' '}
         <span className='description ml'>
           on{' '}
